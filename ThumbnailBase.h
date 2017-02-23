@@ -24,13 +24,11 @@
 #include "ImageTransformation.h"
 #include "IntrusivePtr.h"
 #include "ThumbnailPixmapCache.h"
-#ifndef Q_MOC_RUN
-#include <boost/shared_ptr.hpp>
-#endif
 #include <QTransform>
 #include <QGraphicsItem>
 #include <QSizeF>
 #include <QRectF>
+#include <memory>
 
 class ThumbnailLoadResult;
 
@@ -109,7 +107,7 @@ private:
 	 */
 	QTransform m_postScaleXform;
 	
-	boost::shared_ptr<LoadCompletionHandler> m_ptrCompletionHandler;
+	std::shared_ptr<LoadCompletionHandler> m_ptrCompletionHandler;
 	bool m_extendedClipArea;
 };
 

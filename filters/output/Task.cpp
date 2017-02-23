@@ -60,7 +60,6 @@
 #include "imageproc/PolygonUtils.h"
 #ifndef Q_MOC_RUN
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #endif
 #include <QImage>
 #include <QString>
@@ -535,11 +534,9 @@ Task::UiUpdater::updateUI(FilterUiInterface* ui)
 	std::function<QPointF(QPointF const&)> orig_to_output;
 	std::function<QPointF(QPointF const&)> output_to_orig;
 	if (m_params.dewarpingMode() != DewarpingMode::OFF && m_params.distortionModel().isValid()) {
-		boost::shared_ptr<DewarpingPointMapper> mapper(
-			new DewarpingPointMapper(
-				m_params.distortionModel(), m_params.depthPerception().value(),
-				m_xform.transform(), m_virtContentRect
-			)
+		auto mapper = std::make_shared<DewarpingPointMapper>(
+			m_params.distortionModel(), m_params.depthPerception().value(),
+			m_xform.transform(), m_virtContentRect
 		);
 		orig_to_output = boost::bind(&DewarpingPointMapper::mapToDewarpedSpace, mapper, _1);
 		output_to_orig = boost::bind(&DewarpingPointMapper::mapToWarpedSpace, mapper, _1);

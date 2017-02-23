@@ -23,9 +23,6 @@
 #include "AbstractCommand.h"
 #include "PixmapRenderer.h"
 #include "imageproc/PolygonUtils.h"
-#ifndef Q_MOC_RUN
-#include <boost/weak_ptr.hpp>
-#endif
 #include <QPixmap>
 #include <QPixmapCache>
 #include <QPainter>
@@ -40,6 +37,7 @@
 #include <QPointF>
 #include <Qt>
 #include <QDebug>
+#include <memory>
 #include <math.h>
 
 using namespace imageproc;
@@ -89,13 +87,11 @@ ThumbnailBase::paint(QPainter* painter,
 	QPixmap pixmap;
 	
 	if (!m_ptrCompletionHandler.get()) {
-		boost::shared_ptr<LoadCompletionHandler> handler(
-			new LoadCompletionHandler(this)
-		);
+		auto handler = std::make_shared<LoadCompletionHandler>(this);
 		ThumbnailPixmapCache::Status const status =
 			m_ptrThumbnailCache->loadRequest(m_imageId, pixmap, handler);
 		if (status == ThumbnailPixmapCache::QUEUED) {
-			m_ptrCompletionHandler.swap(handler);
+			m_ptrCompletionHandler = std::move(handler);
 		}
 	}
 	
