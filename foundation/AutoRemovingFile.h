@@ -22,36 +22,23 @@
 #include <QString>
 
 /**
- * \brief Provides auto_ptr semantics for files.
+ * \brief Provides unique_ptr semantics for files.
  *
- * Just like std::auto_ptr deleting its object when it goes out of scope,
- * this class deletes a file.  auto_ptr's copying semantics is also preserved.
+ * Just like std::unique_ptr deleting its object when it goes out of scope,
+ * this class deletes a file.  Like unique_ptr it is move-only, not copyable.
  */
 class AutoRemovingFile
 {
-private:
-	struct CopyHelper
-	{
-		AutoRemovingFile* obj;
-
-		CopyHelper(AutoRemovingFile* o) : obj(o) {}
-	};
 public:
 	AutoRemovingFile();
 
 	AutoRemovingFile(QString const& file_path);
 
-	AutoRemovingFile(AutoRemovingFile& other);
-
-	AutoRemovingFile(CopyHelper other);
+	AutoRemovingFile(AutoRemovingFile&& other);
 
 	~AutoRemovingFile();
 
-	AutoRemovingFile& operator=(AutoRemovingFile& other);
-
-	AutoRemovingFile& operator=(CopyHelper other);
-
-	operator CopyHelper() { return CopyHelper(this); }
+	AutoRemovingFile& operator=(AutoRemovingFile&& other);
 
 	QString const& get() const { return m_file; }
 

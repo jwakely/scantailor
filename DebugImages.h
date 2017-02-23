@@ -68,7 +68,7 @@ private:
 
 		Item(AutoRemovingFile f, QString const& l,
 			boost::function<QWidget* (QImage const&)> const& imf)
-		:	file(f), label(l), imageViewFactory(imf) {}
+		:	file(std::move(f)), label(l), imageViewFactory(imf) {}
 	};
 
 	std::deque<IntrusivePtr<Item> > m_sequence;

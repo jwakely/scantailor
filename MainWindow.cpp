@@ -790,7 +790,7 @@ MainWindow::setImageWidget(
 		AutoRemovingFile file;
 		QString label;
 		while (!(file = debug_images->retrieveNext(&label)).get().isNull()) {
-			QWidget* widget = new DebugImageView(file);
+			QWidget* widget = new DebugImageView(std::move(file));
 			m_imageWidgetCleanup.add(widget);
 			m_ptrTabbedDebugImages->addTab(widget, label);
 		}

@@ -64,7 +64,7 @@ private:
 DebugImageView::DebugImageView(AutoRemovingFile file,
 	boost::function<QWidget* (QImage const&)> const& image_view_factory, QWidget* parent)
 :	QStackedWidget(parent),
-	m_file(file),
+	m_file(std::move(file)),
 	m_imageViewFactory(image_view_factory),
 	m_pPlaceholderWidget(new ProcessingIndicationWidget(this)),
 	m_isLive(false)

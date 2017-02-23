@@ -28,13 +28,8 @@ AutoRemovingFile::AutoRemovingFile(QString const& file_path)
 {
 }
 
-AutoRemovingFile::AutoRemovingFile(AutoRemovingFile& other)
+AutoRemovingFile::AutoRemovingFile(AutoRemovingFile&& other)
 :	m_file(other.release())
-{
-}
-
-AutoRemovingFile::AutoRemovingFile(CopyHelper other)
-:	m_file(other.obj->release())
 {
 }
 
@@ -46,16 +41,9 @@ AutoRemovingFile::~AutoRemovingFile()
 }
 
 AutoRemovingFile&
-AutoRemovingFile::operator=(AutoRemovingFile& other)
+AutoRemovingFile::operator=(AutoRemovingFile&& other)
 {
 	m_file = other.release();
-	return *this;
-}
-
-AutoRemovingFile&
-AutoRemovingFile::operator=(CopyHelper other)
-{
-	m_file = other.obj->release();
 	return *this;
 }
 

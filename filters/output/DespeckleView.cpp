@@ -218,7 +218,7 @@ DespeckleView::despeckleDone(
 		AutoRemovingFile file;
 		QString label;
 		while (!(file = dbg->retrieveNext(&label)).get().isNull()) {
-			tab_widget->addTab(new DebugImageView(file), label);
+			tab_widget->addTab(new DebugImageView(std::move(file)), label);
 		}
 		widget = tab_widget;
 	}

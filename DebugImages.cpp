@@ -42,7 +42,7 @@ DebugImages::add(
 		return;
 	}
 
-	m_sequence.push_back(IntrusivePtr<Item>(new Item(arem_file, label, image_view_factory)));
+	m_sequence.push_back(IntrusivePtr<Item>(new Item(std::move(arem_file), label, image_view_factory)));
 }
 
 void
@@ -60,7 +60,7 @@ DebugImages::retrieveNext(QString* label, boost::function<QWidget* (QImage const
 		return AutoRemovingFile();
 	}
 
-	AutoRemovingFile file(m_sequence.front()->file);
+	AutoRemovingFile file(std::move(m_sequence.front()->file));
 	if (label) {
 		*label = m_sequence.front()->label;
 	}
