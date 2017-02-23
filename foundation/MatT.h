@@ -63,6 +63,11 @@ public:
 	MatT(MatT const& other);
 
 	/**
+	 * Ordinary move-construction.
+	 */
+	MatT(MatT&& other);
+
+	/**
 	 * \brief Construction from a matrix of a different type.
 	 *
 	 * Conversion is done by static casts.
@@ -71,9 +76,14 @@ public:
 	MatT(MatT<OT> const& other);
 
 	/**
-	 * \brief Ordinary assignment.
+	 * \brief Ordinary copy-assignment.
 	 */
 	MatT& operator=(MatT const& other);
+
+	/**
+	 * \brief Ordinary move-assignment.
+	 */
+	MatT& operator=(MatT&& other);
 
 	/**
 	 * \brief Assignment from a matrix of a different type.
@@ -171,6 +181,15 @@ MatT<T>::MatT(MatT const& other)
 }
 
 template<typename T>
+MatT<T>::MatT(MatT&& other)
+:	m_rows(other.rows()),
+	m_cols(other.cols()),
+	m_data(std::move(other.m_data))
+{
+	m_rows = m_cols = 0;
+}
+
+template<typename T>
 template<typename OT>
 MatT<T>::MatT(MatT<OT> const& other)
 :	m_rows(other.rows()),
@@ -189,6 +208,14 @@ MatT<T>&
 MatT<T>::operator=(MatT const& other)
 {
 	MatT(other).swap(*this);
+	return *this;
+}
+
+template<typename T>
+MatT<T>&
+MatT<T>::operator=(MatT&& other)
+{
+	MatT(std::move(other)).swap(*this);
 	return *this;
 }
 
