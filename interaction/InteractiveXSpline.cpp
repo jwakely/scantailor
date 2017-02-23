@@ -26,6 +26,7 @@
 #ifndef Q_MOC_RUN
 #include <boost/bind.hpp>
 #endif
+#include <memory>
 
 struct InteractiveXSpline::NoOp
 {
@@ -55,7 +56,7 @@ InteractiveXSpline::setSpline(XSpline const& spline)
 	int const num_control_points = spline.numControlPoints();
 
 	XSpline new_spline(spline);
-	boost::scoped_array<ControlPoint> new_control_points(
+	std::unique_ptr<ControlPoint[]> new_control_points(
 		new ControlPoint[num_control_points]
 	);
 

@@ -25,7 +25,6 @@
 #include "imageproc/GaussBlur.h"
 #include "imageproc/Sobel.h"
 #ifndef Q_MOC_RUN
-#include <boost/scoped_array.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #endif
@@ -38,6 +37,7 @@
 #include <QDebug>
 #include <limits>
 #include <algorithm>
+#include <memory>
 #include <math.h>
 #include <assert.h>
 

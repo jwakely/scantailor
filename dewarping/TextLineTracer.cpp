@@ -59,7 +59,6 @@
 #include <QColor>
 #include <QtGlobal>
 #ifndef Q_MOC_RUN
-#include <boost/scoped_array.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/if.hpp>

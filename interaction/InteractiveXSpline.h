@@ -26,9 +26,7 @@
 #include "VecNT.h"
 #include <QPointF>
 #include <QCoreApplication>
-#ifndef Q_MOC_RUN
-#include <boost/scoped_array.hpp>
-#endif
+#include <memory>
 #include <functional>
 #include <stddef.h>
 
@@ -102,7 +100,7 @@ private:
 	Transform m_fromStorage;
 	Transform m_toStorage;
 	XSpline m_spline;
-	boost::scoped_array<ControlPoint> m_controlPoints;
+	std::unique_ptr<ControlPoint[]> m_controlPoints;
 	InteractionState::Captor m_curveProximity;
 	QPointF m_curveProximityPointStorage;
 	QPointF m_curveProximityPointScreen;
