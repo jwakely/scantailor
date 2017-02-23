@@ -44,9 +44,9 @@
 #include <Qt>
 #include <QDebug>
 #ifndef Q_MOC_RUN
-#include <boost/array.hpp>
 #include <boost/bind.hpp>
 #endif
+#include <array>
 #include <vector>
 #include <stdexcept>
 
