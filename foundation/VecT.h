@@ -61,6 +61,11 @@ public:
 	VecT(VecT const& other);
 
 	/**
+	 * Ordinary move-construction.
+	 */
+	VecT(VecT&& other);
+
+	/**
 	 * \brief Construction from a vector of a different type.
 	 *
 	 * Conversion is done by static casts.
@@ -69,9 +74,14 @@ public:
 	VecT(VecT<OT> const& other);
 
 	/**
-	 * \brief Ordinary assignment.
+	 * \brief Ordinary copy-assignment.
 	 */
 	VecT& operator=(VecT const& other);
+
+	/**
+	 * \brief Ordinary move-assignment.
+	 */
+	VecT& operator=(VecT&& other);
 
 	/**
 	 * \brief Assignment from a vector of a different type.
@@ -158,6 +168,15 @@ VecT<T>::VecT(VecT const& other)
 }
 
 template<typename T>
+VecT<T>::VecT(VecT&& other)
+: m_data(std::move(other.m_data))
+, m_size(other.m_size)
+{
+	other.m_size = 0;
+}
+
+
+template<typename T>
 template<typename OT>
 VecT<T>::VecT(VecT<OT> const& other)
 : m_data(new T[other.m_size])
@@ -174,6 +193,14 @@ VecT<T>&
 VecT<T>::operator=(VecT const& other)
 {
 	VecT(other).swap(*this);
+	return *this;
+}
+
+template<typename T>
+VecT<T>&
+VecT<T>::operator=(VecT&& other)
+{
+	VecT(std::move(other)).swap(*this);
 	return *this;
 }
 
