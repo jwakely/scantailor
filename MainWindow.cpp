@@ -128,6 +128,7 @@
 #include <Qt>
 #include <QDebug>
 #include <algorithm>
+#include <functional>
 #include <vector>
 #include <stddef.h>
 #include <math.h>
@@ -1922,7 +1923,7 @@ MainWindow::showInsertFileDialog(BeforeOrAfter before_or_after, ImageId const& e
 	}
 
 	// Check if there is at least one DPI that's not OK.
-	if (std::find_if(new_files.begin(), new_files.end(), !boost::lambda::bind(&ImageFileInfo::isDpiOK, boost::lambda::_1)) != new_files.end()) {
+	if (!std::all_of(new_files.begin(), new_files.end(), std::mem_fn(&ImageFileInfo::isDpiOK))) {
 
 		std::auto_ptr<FixDpiDialog> dpi_dialog(new FixDpiDialog(new_files, this));
 		dpi_dialog->setWindowModality(Qt::WindowModal);

@@ -22,10 +22,6 @@
 #include "ImageFileInfo.h"
 #include <QString>
 #include <Qt>
-#ifndef Q_MOC_RUN
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#endif
 #include <algorithm>
 #include <assert.h>
 
@@ -49,12 +45,10 @@ namespace
 template<typename T>
 bool allDpisOK(T const& container)
 {
-	using namespace boost::lambda;
-	
-	return std::find_if(
+	return std::all_of(
 		container.begin(), container.end(),
-		!bind(&ImageFileInfo::isDpiOK, _1)
-	) == container.end();
+		std::mem_fn(&ImageFileInfo::isDpiOK)
+	);
 }
 
 } // anonymous namespace
