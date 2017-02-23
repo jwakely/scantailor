@@ -441,7 +441,7 @@ MainWindow::switchToNewProject(
 void
 MainWindow::showNewOpenProjectPanel()
 {
-	std::auto_ptr<QWidget> outer_widget(new QWidget);
+	std::unique_ptr<QWidget> outer_widget(new QWidget);
 	QGridLayout* layout = new QGridLayout(outer_widget.get());
 	outer_widget->setLayout(layout);
 	
