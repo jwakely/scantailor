@@ -33,14 +33,12 @@
 #include "PageRange.h"
 #include "SelectedPage.h"
 #include "BeforeOrAfter.h"
-#ifndef Q_MOC_RUN
-#include <boost/function.hpp>
-#endif
 #include <QMainWindow>
 #include <QString>
 #include <QPointer>
 #include <QObjectCleanupHandler>
 #include <QSizeF>
+#include <functional>
 #include <memory>
 #include <vector>
 #include <set>
@@ -291,7 +289,7 @@ private:
 	std::unique_ptr<PageOrientationPropagator> m_ptrPageOrientationPropagator;
 	std::unique_ptr<QWidget> m_ptrBatchProcessingWidget;
 	std::unique_ptr<ProcessingIndicationWidget> m_ptrProcessingIndicationWidget;
-	boost::function<bool()> m_checkBeepWhenFinished;
+	std::function<bool()> m_checkBeepWhenFinished;
 	SelectedPage m_selectedPage;
 	QObjectCleanupHandler m_optionsWidgetCleanup;
 	QObjectCleanupHandler m_imageWidgetCleanup;

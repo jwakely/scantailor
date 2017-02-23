@@ -27,18 +27,18 @@
 #include <QPointF>
 #include <QCoreApplication>
 #ifndef Q_MOC_RUN
-#include <boost/function.hpp>
 #include <boost/scoped_array.hpp>
 #endif
+#include <functional>
 #include <stddef.h>
 
 class InteractiveXSpline : public InteractionHandler
 {
 	Q_DECLARE_TR_FUNCTIONS(InteractiveXSpline)
 public:
-	typedef boost::function<QPointF (QPointF const&)> Transform;
-	typedef boost::function<void()> ModifiedCallback;
-	typedef boost::function<void()> DragFinishedCallback;
+	typedef std::function<QPointF (QPointF const&)> Transform;
+	typedef std::function<void()> ModifiedCallback;
+	typedef std::function<void()> DragFinishedCallback;
 
 	InteractiveXSpline();
 
@@ -48,9 +48,9 @@ public:
 
 	void setStorageTransform(Transform const& from_storage, Transform const& to_storage);
 
-	void setModifiedCallback(ModifiedCallback const& callback);
+	void setModifiedCallback(ModifiedCallback callback);
 
-	void setDragFinishedCallback(DragFinishedCallback const& callback);
+	void setDragFinishedCallback(DragFinishedCallback callback);
 
 	/**
 	 * \brief Returns true if the curve is a proximity leader.

@@ -97,15 +97,15 @@ InteractiveXSpline::setStorageTransform(
 }
 
 void
-InteractiveXSpline::setModifiedCallback(ModifiedCallback const& callback)
+InteractiveXSpline::setModifiedCallback(ModifiedCallback callback)
 {
-	m_modifiedCallback = callback;
+	m_modifiedCallback = std::move(callback);
 }
 
 void
-InteractiveXSpline::setDragFinishedCallback(DragFinishedCallback const& callback)
+InteractiveXSpline::setDragFinishedCallback(DragFinishedCallback callback)
 {
-	m_dragFinishedCallback = callback;
+	m_dragFinishedCallback = std::move(callback);
 }
 
 bool

@@ -27,8 +27,8 @@
 namespace page_split
 {
 
-UnremoveButton::UnremoveButton(PositionGetter const& position_getter)
-:	m_positionGetter(position_getter),
+UnremoveButton::UnremoveButton(PositionGetter position_getter)
+:	m_positionGetter(std::move(position_getter)),
 	m_clickCallback(&UnremoveButton::noOp),
 	m_defaultPixmap(":/icons/trashed-big.png"),
 	m_hoveredPixmap(":/icons/untrash-big.png"),

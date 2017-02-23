@@ -43,6 +43,7 @@
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #endif
+#include <functional>
 #include <vector>
 #include <assert.h>
 
@@ -65,8 +66,8 @@ private:
 
 FillZoneEditor::FillZoneEditor(
 	QImage const& image, ImagePixmapUnion const& downscaled_version,
-	boost::function<QPointF(QPointF const&)> const& orig_to_image,
-	boost::function<QPointF(QPointF const&)> const& image_to_orig,
+	std::function<QPointF(QPointF const&)> orig_to_image,
+	std::function<QPointF(QPointF const&)> image_to_orig,
 	PageId const& page_id, IntrusivePtr<Settings> const& settings)
 :	ImageViewBase(
 		image, downscaled_version,
@@ -78,8 +79,8 @@ FillZoneEditor::FillZoneEditor(
 	m_colorPickupInteraction(m_zones, m_context),
 	m_dragHandler(*this),
 	m_zoomHandler(*this),
-	m_origToImage(orig_to_image),
-	m_imageToOrig(image_to_orig),
+	m_origToImage(std::move(orig_to_image)),
+	m_imageToOrig(std::move(image_to_orig)),
 	m_pageId(page_id),
 	m_ptrSettings(settings)
 {

@@ -62,10 +62,10 @@ private:
 
 
 DebugImageView::DebugImageView(AutoRemovingFile file,
-	boost::function<QWidget* (QImage const&)> const& image_view_factory, QWidget* parent)
+	std::function<QWidget* (QImage const&)> image_view_factory, QWidget* parent)
 :	QStackedWidget(parent),
 	m_file(std::move(file)),
-	m_imageViewFactory(image_view_factory),
+	m_imageViewFactory(std::move(image_view_factory)),
 	m_pPlaceholderWidget(new ProcessingIndicationWidget(this)),
 	m_isLive(false)
 {
@@ -100,7 +100,7 @@ DebugImageView::imageLoaded(QImage const& image)
 
 	if (currentWidget() == m_pPlaceholderWidget) {
 		std::unique_ptr<QWidget> image_view;
-		if (m_imageViewFactory.empty()) {
+		if (!m_imageViewFactory) {
 			image_view.reset(new BasicImageView(image));
 		} else {
 			image_view.reset(m_imageViewFactory(image));

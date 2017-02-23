@@ -25,9 +25,7 @@
 #include <QPointF>
 #include <QPixmap>
 #include <QCoreApplication>
-#ifndef Q_MOC_RUN
-#include <boost/function.hpp>
-#endif
+#include <functional>
 
 namespace page_split
 {
@@ -36,13 +34,13 @@ class UnremoveButton : public InteractionHandler
 {
 	Q_DECLARE_TR_FUNCTIONS(page_split::UnremoveButton)
 public:
-	typedef boost::function<QPointF()> PositionGetter;
-	typedef boost::function<void()> ClickCallback;
+	typedef std::function<QPointF()> PositionGetter;
+	typedef std::function<void()> ClickCallback;
 
-	UnremoveButton(PositionGetter const& position_getter);
+	UnremoveButton(PositionGetter position_getter);
 
-	void setClickCallback(ClickCallback const& callback) {
-		m_clickCallback = callback;
+	void setClickCallback(ClickCallback callback) {
+		m_clickCallback = std::move(callback);
 	}
 protected:
 	virtual void onPaint(QPainter& painter, InteractionState const& interaction);

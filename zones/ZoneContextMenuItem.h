@@ -20,9 +20,7 @@
 #define ZONE_CONTEXT_MENU_ITEM_H_
 
 #include <QString>
-#ifndef Q_MOC_RUN
-#include <boost/function.hpp>
-#endif
+#include <functional>
 
 class InteractionState;
 class InteractionHandler;
@@ -40,10 +38,10 @@ public:
 	 * you will need to make sure it's disconnected from ZoneInteractionContext
 	 * before ZoneInteractionContext destroys.
 	 */
-	typedef boost::function<InteractionHandler*(InteractionState&)> Callback;
+	typedef std::function<InteractionHandler*(InteractionState&)> Callback;
 
-	ZoneContextMenuItem(QString const& label, Callback const& callback)
-		: m_label(label), m_callback(callback) {}
+	ZoneContextMenuItem(QString const& label, Callback callback)
+		: m_label(label), m_callback(std::move(callback)) {}
 
 	QString const& label() const { return m_label; }
 

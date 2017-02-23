@@ -22,20 +22,18 @@
 #include "DraggableObject.h"
 #include <QPointF>
 #include <QLineF>
-#ifndef Q_MOC_RUN
-#include <boost/function.hpp>
-#endif
+#include <functional>
 
 class ObjectDragHandler;
 
 class DraggableLineSegment : public DraggableObject
 {
 public:
-	typedef boost::function<
+	typedef std::function<
 		QLineF ()
 	> PositionCallback;
 
-	typedef boost::function<
+	typedef std::function<
 		void (QLineF const& line)
 	> MoveRequestCallback;
 
@@ -51,12 +49,12 @@ public:
 
 	virtual void dragContinuation(QPointF const& mouse_pos);
 
-	void setPositionCallback(PositionCallback const& callback) {
-		m_positionCallback = callback;
+	void setPositionCallback(PositionCallback callback) {
+		m_positionCallback = std::move(callback);
 	}
 
-	void setMoveRequestCallback(MoveRequestCallback const& callback) {
-		m_moveRequestCallback = callback;
+	void setMoveRequestCallback(MoveRequestCallback callback) {
+		m_moveRequestCallback = std::move(callback);
 	}
 protected:
 	virtual QLineF lineSegmentPosition() const {

@@ -26,7 +26,7 @@
 void
 DebugImages::add(
 	QImage const& image, QString const& label,
-	boost::function<QWidget* (QImage const&)> const& image_view_factory)
+	std::function<QWidget* (QImage const&)> image_view_factory)
 {
 	QTemporaryFile file(QDir::tempPath()+"/scantailor-dbg-XXXXXX.png");
 	if (!file.open()) {
@@ -42,19 +42,19 @@ DebugImages::add(
 		return;
 	}
 
-	m_sequence.push_back(IntrusivePtr<Item>(new Item(std::move(arem_file), label, image_view_factory)));
+	m_sequence.push_back(IntrusivePtr<Item>(new Item(std::move(arem_file), label, std::move(image_view_factory))));
 }
 
 void
 DebugImages::add(
 	imageproc::BinaryImage const& image, QString const& label,
-	boost::function<QWidget* (QImage const&)> const& image_view_factory)
+	std::function<QWidget* (QImage const&)> image_view_factory)
 {
-	add(image.toQImage(), label, image_view_factory);
+	add(image.toQImage(), label, std::move(image_view_factory));
 }
 
 AutoRemovingFile
-DebugImages::retrieveNext(QString* label, boost::function<QWidget* (QImage const&)>* image_view_factory)
+DebugImages::retrieveNext(QString* label, std::function<QWidget* (QImage const&)>* image_view_factory)
 {
 	if (m_sequence.empty()) {
 		return AutoRemovingFile();

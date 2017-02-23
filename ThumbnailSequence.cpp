@@ -33,7 +33,6 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/mem_fun.hpp>
-#include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/foreach.hpp>
@@ -69,6 +68,7 @@
 #include <Qt>
 #include <QDebug>
 #include <algorithm>
+#include <functional>
 #include <stddef.h>
 #include <assert.h>
 
@@ -103,10 +103,10 @@ private:
 class ThumbnailSequence::GraphicsScene : public QGraphicsScene
 {
 public:
-	typedef boost::function<void (QGraphicsSceneContextMenuEvent*)> ContextMenuEventCallback;
+	typedef std::function<void (QGraphicsSceneContextMenuEvent*)> ContextMenuEventCallback;
 
 	void setContextMenuEventCallback(ContextMenuEventCallback callback) {
-		m_contextMenuEventCallback = callback;
+		m_contextMenuEventCallback = std::move(callback);
 	}
 protected:
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) {

@@ -21,7 +21,7 @@
 
 #include "InteractionState.h"
 #include "Proximity.h"
-#include <boost/function.hpp>
+#include <functional>
 
 class ObjectDragHandler;
 class QPoint;
@@ -31,31 +31,31 @@ class QPainter;
 class DraggableObject
 {
 public:
-	typedef boost::function<
+	typedef std::function<
 		void (QPainter& painter, InteractionState const& interaction)
 	> PaintCallback;
 
-	typedef boost::function<
+	typedef std::function<
 		Proximity (InteractionState const& interaction)
 	> ProximityThresholdCallback;
 
-	typedef boost::function<
+	typedef std::function<
 		int ()
 	> ProximityPriorityCallback;
 
-	typedef boost::function<
+	typedef std::function<
 		Proximity (QPointF const& mouse_pos)
 	> ProximityCallback;
 
-	typedef boost::function<
+	typedef std::function<
 		void (QPointF const& mouse_pos)
 	> DragInitiatedCallback;
 
-	typedef boost::function<
+	typedef std::function<
 		void (QPointF const& mouse_pos)
 	> DragContinuationCallback;
 
-	typedef boost::function<
+	typedef std::function<
 		void (QPointF const& mouse_pos)
 	> DragFinishedCallback;
 
@@ -75,8 +75,8 @@ public:
 		m_paintCallback(painter, interaction);
 	}
 
-	void setPaintCallback(PaintCallback const& callback) {
-		m_paintCallback = callback;
+	void setPaintCallback(PaintCallback callback) {
+		m_paintCallback = std::move(callback);
 	}
 
 	/**
@@ -87,8 +87,8 @@ public:
 		return m_proximityThresholdCallback(interaction);
 	}
 
-	void setProximityThresholdCallback(ProximityThresholdCallback const& callback) {
-		m_proximityThresholdCallback = callback;
+	void setProximityThresholdCallback(ProximityThresholdCallback callback) {
+		m_proximityThresholdCallback = std::move(callback);
 	}
 
 	/**
@@ -100,8 +100,8 @@ public:
 		return m_proximityPriorityCallback();
 	}
 
-	void setProximityPriorityCallback(ProximityPriorityCallback const& callback) {
-		m_proximityPriorityCallback = callback;
+	void setProximityPriorityCallback(ProximityPriorityCallback callback) {
+		m_proximityPriorityCallback = std::move(callback);
 	}
 
 	/**
@@ -112,8 +112,8 @@ public:
 		return m_proximityCallback(widget_mouse_pos);
 	}
 
-	void setProximityCallback(ProximityCallback const& callback) {
-		m_proximityCallback = callback;
+	void setProximityCallback(ProximityCallback callback) {
+		m_proximityCallback = std::move(callback);
 	}
 
 	/**
@@ -123,8 +123,8 @@ public:
 		m_dragInitiatedCallback(mouse_pos);
 	}
 
-	void setDragInitiatedCallback(DragInitiatedCallback const& callback) {
-		m_dragInitiatedCallback = callback;
+	void setDragInitiatedCallback(DragInitiatedCallback callback) {
+		m_dragInitiatedCallback = std::move(callback);
 	}
 
 	/**
@@ -134,8 +134,8 @@ public:
 		m_dragContinuationCallback(mouse_pos);
 	}
 
-	void setDragContinuationCallback(DragInitiatedCallback const& callback) {
-		m_dragContinuationCallback = callback;
+	void setDragContinuationCallback(DragInitiatedCallback callback) {
+		m_dragContinuationCallback = std::move(callback);
 	}
 
 	/**
@@ -145,8 +145,8 @@ public:
 		m_dragFinishedCallback(mouse_pos);
 	}
 
-	void setDragFinishedCallback(DragFinishedCallback const& callback) {
-		m_dragFinishedCallback = callback;
+	void setDragFinishedCallback(DragFinishedCallback callback) {
+		m_dragFinishedCallback = std::move(callback);
 	}
 private:
 	static void defaultPaint(QPainter&, InteractionState const&) {}

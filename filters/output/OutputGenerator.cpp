@@ -1060,7 +1060,7 @@ OutputGenerator::processWithDewarping(
 			m_xform.transform(), m_contentRect
 		)
 	);
-	boost::function<QPointF(QPointF const&)> const orig_to_output(
+	std::function<QPointF(QPointF const&)> const orig_to_output(
 		boost::bind(&DewarpingPointMapper::mapToDewarpedSpace, mapper, _1)
 	);
 
@@ -1781,7 +1781,7 @@ OutputGenerator::calcDominantBackgroundGrayLevel(QImage const& img)
 void
 OutputGenerator::applyFillZonesInPlace(
 	QImage& img, ZoneSet const& zones,
-	boost::function<QPointF(QPointF const&)> const& orig_to_output) const
+	std::function<QPointF(QPointF const&)> const& orig_to_output) const
 {
 	if (zones.empty()) {
 		return;
@@ -1825,7 +1825,7 @@ OutputGenerator::applyFillZonesInPlace(QImage& img, ZoneSet const& zones) const
 void
 OutputGenerator::applyFillZonesInPlace(
 	imageproc::BinaryImage& img, ZoneSet const& zones,
-	boost::function<QPointF(QPointF const&)> const& orig_to_output) const
+	std::function<QPointF(QPointF const&)> const& orig_to_output) const
 {
 	if (zones.empty()) {
 		return;

@@ -22,9 +22,7 @@
 #include "EditableSpline.h"
 #include "SplineVertex.h"
 #include "EditableZoneSet.h"
-#ifndef Q_MOC_RUN
-#include <boost/function.hpp>
-#endif
+#include <functional>
 
 class InteractionHandler;
 class InteractionState;
@@ -34,26 +32,26 @@ class EditableZoneSet;
 class ZoneInteractionContext
 {
 public:
-	typedef boost::function<
+	typedef std::function<
 		InteractionHandler* ()
 	> DefaultInteractionCreator;
 
-	typedef boost::function<
+	typedef std::function<
 		InteractionHandler* (InteractionState& interaction)
 	> ZoneCreationInteractionCreator;
 
-	typedef boost::function<
+	typedef std::function<
 		InteractionHandler* (
 			InteractionState& interaction,
 			EditableSpline::Ptr const& spline, SplineVertex::Ptr const& vertex
 		)
 	> VertexDragInteractionCreator;
 
-	typedef boost::function<
+	typedef std::function<
 		InteractionHandler* (InteractionState& interaction)
 	> ContextMenuInteractionCreator;
 
-	typedef boost::function<
+	typedef std::function<
 		void (EditableZoneSet::Zone const& zone)
 	> ShowPropertiesCommand;
 
@@ -69,16 +67,16 @@ public:
 		return m_defaultInteractionCreator();
 	}
 
-	void setDefaultInteractionCreator(DefaultInteractionCreator const& creator) {
-		m_defaultInteractionCreator = creator;
+	void setDefaultInteractionCreator(DefaultInteractionCreator creator) {
+		m_defaultInteractionCreator = std::move(creator);
 	}
 
 	virtual InteractionHandler* createZoneCreationInteraction(InteractionState& interaction) {
 		return m_zoneCreationInteractionCreator(interaction);
 	}
 
-	void setZoneCreationInteractionCreator(ZoneCreationInteractionCreator const& creator) {
-		m_zoneCreationInteractionCreator = creator;
+	void setZoneCreationInteractionCreator(ZoneCreationInteractionCreator creator) {
+		m_zoneCreationInteractionCreator = std::move(creator);
 	}
 
 	virtual InteractionHandler* createVertexDragInteraction(
@@ -87,8 +85,8 @@ public:
 		return m_vertexDragInteractionCreator(interaction, spline, vertex);
 	}
 
-	void setVertexDragInteractionCreator(VertexDragInteractionCreator const& creator) {
-		m_vertexDragInteractionCreator = creator;
+	void setVertexDragInteractionCreator(VertexDragInteractionCreator creator) {
+		m_vertexDragInteractionCreator = std::move(creator);
 	}
 
 	/**
@@ -98,16 +96,16 @@ public:
 		return m_contextMenuInteractionCreator(interaction);
 	}
 
-	void setContextMenuInteractionCreator(ContextMenuInteractionCreator const& creator) {
-		m_contextMenuInteractionCreator = creator;
+	void setContextMenuInteractionCreator(ContextMenuInteractionCreator creator) {
+		m_contextMenuInteractionCreator = std::move(creator);
 	}
 
 	virtual void showPropertiesCommand(EditableZoneSet::Zone const& zone) {
 		m_showPropertiesCommand(zone);
 	}
 
-	void setShowPropertiesCommand(ShowPropertiesCommand const& command) {
-		m_showPropertiesCommand = command;
+	void setShowPropertiesCommand(ShowPropertiesCommand command) {
+		m_showPropertiesCommand = std::move(command);
 	}
 private:
 	/**

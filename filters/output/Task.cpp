@@ -532,8 +532,8 @@ Task::UiUpdater::updateUI(FilterUiInterface* ui)
 	// In OptionsWidget::dewarpingChanged() we make sure to reload
 	// if we are on the "Fill Zones" tab, and if not, it will be reloaded
 	// anyway when another tab is selected.
-	boost::function<QPointF(QPointF const&)> orig_to_output;
-	boost::function<QPointF(QPointF const&)> output_to_orig;
+	std::function<QPointF(QPointF const&)> orig_to_output;
+	std::function<QPointF(QPointF const&)> output_to_orig;
 	if (m_params.dewarpingMode() != DewarpingMode::OFF && m_params.distortionModel().isValid()) {
 		boost::shared_ptr<DewarpingPointMapper> mapper(
 			new DewarpingPointMapper(
@@ -552,7 +552,8 @@ Task::UiUpdater::updateUI(FilterUiInterface* ui)
 	std::unique_ptr<QWidget> fill_zone_editor(
 		new FillZoneEditor(
 			m_outputImage, downscaled_output_pixmap,
-			orig_to_output, output_to_orig, m_pageId, m_ptrSettings
+			std::move(orig_to_output), std::move(output_to_orig),
+			m_pageId, m_ptrSettings
 		)
 	);
 	QObject::connect(
