@@ -84,8 +84,6 @@ TextLineTracer::trace(
 	DistortionModelBuilder& output,
 	TaskStatus const& status, DebugImages* dbg)
 {
-	using namespace boost::lambda;
-
 	GrayImage downscaled(downscale(input, dpi));
 	if (dbg) {
 		dbg->add(downscaled, "downscaled");
@@ -404,7 +402,7 @@ TextLineTracer::extractTextLines(
 
 	rasterOpGeneric(
 		main_grid.data(), main_grid.stride(), size,
-		aux_grid.data(), aux_grid.stride(), _2 = bind((float (*)(float))&std::fabs, _1)
+		aux_grid.data(), aux_grid.stride(), _2 = bind(&::fabsf, _1)
 	);
 	if (dbg) {
 		dbg->add(visualizeGradient(image, aux_grid), "abs");
