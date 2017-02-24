@@ -29,9 +29,6 @@
 #include <QColor>
 #include <QtGlobal>
 #include <QDebug>
-#ifndef Q_MOC_RUN
-#include <boost/bind.hpp>
-#endif
 #include <algorithm>
 
 namespace page_split
@@ -48,8 +45,8 @@ ImageView::ImageView(
 	),
 	m_ptrPages(pages),
 	m_imageId(image_id),
-	m_leftUnremoveButton(boost::bind(&ImageView::leftPageCenter, this)),
-	m_rightUnremoveButton(boost::bind(&ImageView::rightPageCenter, this)),
+	m_leftUnremoveButton([this] { return leftPageCenter(); }),
+	m_rightUnremoveButton([this] { return rightPageCenter(); }),
 	m_dragHandler(*this),
 	m_zoomHandler(*this),
 	m_handlePixmap(":/icons/aqua-sphere.png"),
@@ -59,8 +56,8 @@ ImageView::ImageView(
 {
 	setMouseTracking(true);
 
-	m_leftUnremoveButton.setClickCallback(boost::bind(&ImageView::unremoveLeftPage, this));
-	m_rightUnremoveButton.setClickCallback(boost::bind(&ImageView::unremoveRightPage, this));
+	m_leftUnremoveButton.setClickCallback([this] { return unremoveLeftPage(); });
+	m_rightUnremoveButton.setClickCallback([this] { return unremoveRightPage(); });
 
 	if (m_leftPageRemoved) {
 		makeLastFollower(m_leftUnremoveButton);
@@ -92,13 +89,13 @@ ImageView::setupCuttersInteraction()
 		for (int j = 0; j < 2; ++j) { // Loop over handles.
 			m_handles[i][j].setHitRadius(hit_radius);
 			m_handles[i][j].setPositionCallback(
-				boost::bind(&ImageView::handlePosition, this, i, j)
+				[this, i, j] { return handlePosition(i, j); }
 			);
 			m_handles[i][j].setMoveRequestCallback(
-				boost::bind(&ImageView::handleMoveRequest, this, i, j, _1)
+				[this, i, j] (QPointF const& pt) { return handleMoveRequest(i, j, pt); }
 			);
 			m_handles[i][j].setDragFinishedCallback(
-				boost::bind(&ImageView::dragFinished, this)
+				[this] (QPointF const&) { return dragFinished(); }
 			);
 
 			m_handleInteractors[i][j].setObject(&m_handles[i][j]);
@@ -107,13 +104,13 @@ ImageView::setupCuttersInteraction()
 		}
 		
 		m_lineSegments[i].setPositionCallback(
-			boost::bind(&ImageView::linePosition, this, i)
+			[this, i] { return linePosition(i); }
 		);
 		m_lineSegments[i].setMoveRequestCallback(
-			boost::bind(&ImageView::lineMoveRequest, this, i, _1)
+			[this, i] (QLineF const& line) { return lineMoveRequest(i, line); }
 		);
 		m_lineSegments[i].setDragFinishedCallback(
-			boost::bind(&ImageView::dragFinished, this)
+			[this] (QPointF const&) { return dragFinished(); }
 		);
 
 		m_lineInteractors[i].setObject(&m_lineSegments[i]);

@@ -61,9 +61,6 @@
 #include "imageproc/ConnectivityMap.h"
 #include "imageproc/InfluenceMap.h"
 #include "config.h"
-#ifndef Q_MOC_RUN
-#include <boost/bind.hpp>
-#endif
 #include <QImage>
 #include <QSize>
 #include <QPoint>
@@ -1057,7 +1054,7 @@ OutputGenerator::processWithDewarping(
 		m_xform.transform(), m_contentRect
 	);
 	std::function<QPointF(QPointF const&)> const orig_to_output(
-		boost::bind(&DewarpingPointMapper::mapToDewarpedSpace, mapper, _1)
+		[mapper] (QPointF const& p) { return mapper->mapToDewarpedSpace(p); }
 	);
 
 	if (render_params.binaryOutput()) {	
@@ -1812,9 +1809,9 @@ OutputGenerator::applyFillZonesInPlace(
 void
 OutputGenerator::applyFillZonesInPlace(QImage& img, ZoneSet const& zones) const
 {
-	typedef QPointF (QTransform::*MapPointFunc)(QPointF const&) const;
+        const auto& xform = m_xform.transform();
 	applyFillZonesInPlace(
-		img, zones, boost::bind((MapPointFunc)&QTransform::map, m_xform.transform(), _1)
+		img, zones, [xform] (QPointF const& p) { return xform.map(p); }
 	);
 }
 
@@ -1843,9 +1840,9 @@ void
 OutputGenerator::applyFillZonesInPlace(
 	imageproc::BinaryImage& img, ZoneSet const& zones) const
 {
-	typedef QPointF (QTransform::*MapPointFunc)(QPointF const&) const;
+        const auto& xform = m_xform.transform();
 	applyFillZonesInPlace(
-		img, zones, boost::bind((MapPointFunc)&QTransform::map, m_xform.transform(), _1)
+		img, zones, [xform] (QPointF const& p) { return xform.map(p); }
 	);
 }
 

@@ -39,9 +39,6 @@
 #include <QBrush>
 #include <QPen>
 #include <Qt>
-#ifndef Q_MOC_RUN
-#include <boost/bind.hpp>
-#endif
 #include <functional>
 #include <vector>
 #include <assert.h>
@@ -88,7 +85,7 @@ FillZoneEditor::FillZoneEditor(
 	setMouseTracking(true);
 
 	m_context.setContextMenuInteractionCreator(
-		boost::bind(&FillZoneEditor::createContextMenuInteraction, this, _1)
+		[this] (InteractionState& interaction) { return createContextMenuInteraction(interaction); }
 	);
 
 	connect(&m_zones, SIGNAL(committed()), SLOT(commitZones()));
@@ -226,10 +223,9 @@ FillZoneEditor::MenuCustomizer::operator()(
 	items.push_back(
 		ZoneContextMenuItem(
 			tr("Pick color"),
-			boost::bind(
-				&FillZoneEditor::createColorPickupInteraction,
-				m_pEditor, zone, _1
-			)
+			[this, zone] (InteractionState& interaction) {
+				return m_pEditor->createColorPickupInteraction(zone, interaction);
+			}
 		)
 	);
 	items.push_back(std_items.deleteItem);

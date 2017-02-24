@@ -43,9 +43,6 @@
 #include <QColor>
 #include <Qt>
 #include <QDebug>
-#ifndef Q_MOC_RUN
-#include <boost/bind.hpp>
-#endif
 #include <array>
 #include <vector>
 #include <stdexcept>
@@ -114,11 +111,11 @@ DewarpingView::DewarpingView(
 	int curve_idx = -1;
 	for (InteractiveXSpline* spline : splines) {
 		++curve_idx;
-		spline->setModifiedCallback(boost::bind(&DewarpingView::curveModified, this, curve_idx));
-		spline->setDragFinishedCallback(boost::bind(&DewarpingView::dragFinished, this));
+		spline->setModifiedCallback([this, curve_idx] { return curveModified(curve_idx); });
+		spline->setDragFinishedCallback([this] { return dragFinished(); });
 		spline->setStorageTransform(
-			boost::bind(&DewarpingView::sourceToWidget, this, _1),
-			boost::bind(&DewarpingView::widgetToSource, this, _1)
+			[this] (QPointF const& pt) { return sourceToWidget(pt); },
+			[this] (QPointF const& pt) { return widgetToSource(pt); }
 		);
 		makeLastFollower(*spline);
 	}

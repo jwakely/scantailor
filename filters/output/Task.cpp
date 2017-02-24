@@ -58,9 +58,6 @@
 #include "ErrorWidget.h"
 #include "imageproc/BinaryImage.h"
 #include "imageproc/PolygonUtils.h"
-#ifndef Q_MOC_RUN
-#include <boost/bind.hpp>
-#endif
 #include <QImage>
 #include <QString>
 #include <QObject>
@@ -538,12 +535,13 @@ Task::UiUpdater::updateUI(FilterUiInterface* ui)
 			m_params.distortionModel(), m_params.depthPerception().value(),
 			m_xform.transform(), m_virtContentRect
 		);
-		orig_to_output = boost::bind(&DewarpingPointMapper::mapToDewarpedSpace, mapper, _1);
-		output_to_orig = boost::bind(&DewarpingPointMapper::mapToWarpedSpace, mapper, _1);
+		orig_to_output = [mapper] (QPointF const& pt) { return mapper->mapToDewarpedSpace(pt); };
+		output_to_orig = [mapper] (QPointF const& pt) { return mapper->mapToWarpedSpace(pt); };
 	} else {
-		typedef QPointF (QTransform::*MapPointFunc)(QPointF const&) const;
-		orig_to_output = boost::bind((MapPointFunc)&QTransform::map, m_xform.transform(), _1);
-		output_to_orig = boost::bind((MapPointFunc)&QTransform::map, m_xform.transformBack(), _1);
+		const auto& xform = m_xform.transform();
+		orig_to_output = [xform] (QPointF const& pt) { return xform.map(pt); };
+		const auto& xform_back = m_xform.transformBack();
+		output_to_orig = [xform_back] (QPointF const& pt) { return xform_back.map(pt); };
 	}
 
 	std::unique_ptr<QWidget> fill_zone_editor(

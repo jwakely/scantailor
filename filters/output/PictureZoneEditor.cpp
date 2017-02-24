@@ -41,9 +41,6 @@
 #include <QPen>
 #include <QBrush>
 #include <Qt>
-#ifndef Q_MOC_RUN
-#include <boost/bind.hpp>
-#endif
 #include <assert.h>
 
 namespace output
@@ -119,7 +116,7 @@ PictureZoneEditor::PictureZoneEditor(
 	setMouseTracking(true);
 
 	m_context.setShowPropertiesCommand(
-		boost::bind(&PictureZoneEditor::showPropertiesDialog, this, _1)
+		[this] (EditableZoneSet::Zone const& zone) { return showPropertiesDialog(zone); }
 	);
 
 	connect(&m_zones, SIGNAL(committed()), SLOT(commitZones()));
