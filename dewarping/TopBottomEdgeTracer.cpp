@@ -39,10 +39,6 @@
 #include <QColor>
 #include <QtGlobal>
 #include <QDebug>
-#ifndef Q_MOC_RUN
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#endif
 #include <limits>
 #include <algorithm>
 #include <math.h>
@@ -767,12 +763,10 @@ TopBottomEdgeTracer::pathToSnake(Grid<GridNode> const& grid, QPoint const& endpo
 void
 TopBottomEdgeTracer::gaussBlurGradient(Grid<GridNode>& grid)
 {
-	using namespace boost::lambda;
-
 	gaussBlurGeneric(
 		QSize(grid.width(), grid.height()), 2.0f, 2.0f,
-		grid.data(), grid.stride(), bind(&GridNode::absDirDeriv, _1),
-		grid.data(), grid.stride(), bind(&GridNode::blurred, _1) = _2
+		grid.data(), grid.stride(), std::mem_fn(&GridNode::absDirDeriv),
+		grid.data(), grid.stride(), [](GridNode& g, int i) { g.blurred = i; }
 	);
 }
 

@@ -863,7 +863,7 @@ MainWindow::showRelinkingDialog()
 	
 	new QtSignalForwarder(
 		dialog, SIGNAL(accepted()),
-		boost::lambda::bind(&MainWindow::performRelinking, this, dialog->relinker())
+		[this, dialog] { return performRelinking(dialog->relinker()); }
 	);
 
 	dialog->show();
@@ -1886,8 +1886,6 @@ MainWindow::showInsertFileDialog(BeforeOrAfter before_or_after, ImageId const& e
 	// so to be safe, remove duplicates.
 	files.erase(std::unique(files.begin(), files.end()), files.end());
 	
-	using namespace boost::lambda;
-	
 	std::vector<ImageFileInfo> new_files;
 	std::vector<QString> loaded_files;
 	std::vector<QString> failed_files; // Those we failed to read metadata from.
@@ -1897,11 +1895,10 @@ MainWindow::showInsertFileDialog(BeforeOrAfter before_or_after, ImageId const& e
 		QFileInfo const file_info(files[i]);
 		ImageFileInfo image_file_info(file_info, std::vector<ImageMetadata>());
 
-		void (std::vector<ImageMetadata>::*push_back) (const ImageMetadata&) =
-			&std::vector<ImageMetadata>::push_back;
 		ImageMetadataLoader::Status const status = ImageMetadataLoader::load(
-			files.at(i), boost::lambda::bind(push_back,
-			boost::ref(image_file_info.imageInfo()), boost::lambda::_1)
+			files.at(i), [&image_file_info] (ImageMetadata const& d) {
+				image_file_info.imageInfo().push_back(d);
+                        }
 		);
 
 		if (status == ImageMetadataLoader::LOADED) {

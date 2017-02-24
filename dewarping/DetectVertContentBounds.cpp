@@ -32,10 +32,6 @@
 #include <QColor>
 #include <Qt>
 #include <QtGlobal>
-#ifndef Q_MOC_RUN
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#endif
 #include <vector>
 #include <deque>
 #include <algorithm>
@@ -276,8 +272,6 @@ SequentialColumnProcessor::segmentIsTooLong(QPoint const p1, QPoint const p2) co
 QLineF
 SequentialColumnProcessor::approximateWithLine(std::vector<Segment>* dbg_segments) const
 {
-	using namespace boost::lambda;
-
 	size_t const num_points = m_path.size();
 
 	std::vector<Segment> segments;
@@ -311,8 +305,9 @@ SequentialColumnProcessor::approximateWithLine(std::vector<Segment>* dbg_segment
 	size_t const num_best_segments = std::min<size_t>(6, segments.size());
 	std::partial_sort(
 		segments.begin(), segments.begin() + num_best_segments, segments.end(),
-		bind(&Segment::distToVertLine, _1, m_leadingTop.x()) <
-		bind(&Segment::distToVertLine, _2, m_leadingTop.x())
+		[this] (Segment const& l, Segment const& r) {
+			return l.distToVertLine(m_leadingTop.x()) < r.distToVertLine(m_leadingTop.x());
+		}
 	);
 	for (size_t i = 0; i < num_best_segments; ++i) {
 		ransac.buildAndAssessModel(segments[i]);

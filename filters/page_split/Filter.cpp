@@ -31,10 +31,6 @@
 #include "Params.h"
 #include "CacheDrivenTask.h"
 #include "OrthogonalRotation.h"
-#ifndef Q_MOC_RUN
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#endif
 #include <QString>
 #include <QObject>
 #include <QCoreApplication>
@@ -101,8 +97,6 @@ QDomElement
 Filter::saveSettings(
 	ProjectWriter const& writer, QDomDocument& doc) const
 {
-	using namespace boost::lambda;
-	
 	QDomElement filter_el(doc.createElement("page-split"));
 	filter_el.setAttribute(
 		"defaultLayoutType",
@@ -110,10 +104,9 @@ Filter::saveSettings(
 	);
 	
 	writer.enumImages(
-		boost::lambda::bind(
-			&Filter::writeImageSettings,
-			this, boost::ref(doc), var(filter_el), boost::lambda::_1, boost::lambda::_2
-		)
+		[this, &doc, &filter_el] (ImageId const& image_id, int numeric_id) {
+			return writeImageSettings(doc, filter_el, image_id, numeric_id);
+		}
 	);
 	
 	return filter_el;
